@@ -44,6 +44,8 @@ namespace CE6127.Tanks.AI
                     m_StateMachine.ChangeState(m_TankSM.m_States.Idle);
             }
 
+            // If the tank is within the stopping distance of the destination...
+            
             if (Time.time >= m_TankSM.NavMeshUpdateDeadline)
             {
                 m_TankSM.NavMeshUpdateDeadline = Time.time + m_TankSM.PatrolNavMeshUpdate;
