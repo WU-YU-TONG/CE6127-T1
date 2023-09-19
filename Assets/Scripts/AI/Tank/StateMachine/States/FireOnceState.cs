@@ -21,6 +21,9 @@ namespace CE6127.Tanks.AI
         /// </summary>
         public override void Enter() => base.Enter();
 
+        // Declare a variable to record current time.
+        private float m_CurrentTime = 0f;
+
         /// <summary>
         /// Method <c>Update</c> is called each frame.
         /// </summary>
@@ -34,8 +37,20 @@ namespace CE6127.Tanks.AI
                 lookPos.y = 0f;
                 var rot = Quaternion.LookRotation(lookPos);
                 m_TankSM.transform.rotation = Quaternion.Slerp(m_TankSM.transform.rotation, rot, m_TankSM.OrientSlerpScalar);
-                m_TankSM.LaunchProjectile();
-                m_StateMachine.ChangeState(m_TankSM.m_States.Idle);
+
+                // Add interval of 0.7f between each firing.
+                m_CurrentTime += Time.deltaTime;
+                if (m_CurrentTime < 0.7f)
+                {
+                    return;
+                }
+                m_CurrentTime = 0f;
+                m_TankSM.LaunchProjectile(10f);
+
+                if (dist < m_TankSM.StopAtTargetDist.x)
+                {
+                    m_TankSM.ChangeState(m_TankSM.m_States.Idle);
+                }
             }
         }
     }
