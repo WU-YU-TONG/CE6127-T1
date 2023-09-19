@@ -24,6 +24,9 @@ namespace CE6127.Tanks.AI
         // Declare a variable to record current time.
         private float m_CurrentTime = 0f;
 
+        // Declare a variable to calculate launch force.
+        private float m_LaunchForce = 6.5f;
+
         /// <summary>
         /// Method <c>Update</c> is called each frame.
         /// </summary>
@@ -32,6 +35,7 @@ namespace CE6127.Tanks.AI
             base.Update();
             if (m_TankSM.Target != null)
             {
+                // Calculate the distance between the tank and the target.
                 var dist = Vector3.Distance(m_TankSM.transform.position, m_TankSM.Target.position);
                 var lookPos = m_TankSM.Target.position - m_TankSM.transform.position;
                 lookPos.y = 0f;
@@ -45,7 +49,12 @@ namespace CE6127.Tanks.AI
                     return;
                 }
                 m_CurrentTime = 0f;
-                m_TankSM.LaunchProjectile(10f);
+
+                // Calculate launch force by launchforce = 1f * dist. 
+                // Restrict launch force to the range of 6.5f to 30f. 
+                m_LaunchForce = Mathf.Clamp(1f * dist, 6.5f, 30f);
+
+                m_TankSM.LaunchProjectile(m_LaunchForce);
 
                 if (dist < m_TankSM.StopAtTargetDist.x)
                 {
