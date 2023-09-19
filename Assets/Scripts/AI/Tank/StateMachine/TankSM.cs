@@ -17,11 +17,13 @@ namespace CE6127.Tanks.AI
             // States:
             public IdleState Idle;
             public PatrollingState Patrolling;
+            public FireOnceState FireOnce;
 
             internal States(TankSM sm)
             {
                 Idle = new IdleState(sm);
                 Patrolling = new PatrollingState(sm);
+                FireOnce = new FireOnceState(sm);
             }
         }
 
@@ -33,7 +35,7 @@ namespace CE6127.Tanks.AI
         public Vector2 PatrolWaitTime = new(1.5f, 3.5f);            // A minimum and maximum time delay for patrolling wait.
         [Tooltip("Minimum and maximum circumradius of the area to patrol at a given update time.")]
         public Vector2 PatrolMaxDist = new(15f, 30f);               // A minimum and maximum circumradius of the area to patrol.
-        [Range(0f, 2f)] public float PatrolNavMeshUpdate = 0.2f;    // A delay between each parolling path update.
+        [Range(0f, 2f)] public float PatrolNavMeshUpdate = 0.2f;    // A delay between each patrolling path update.
         [Header("Targeting")]
         [Tooltip("Minimum and maximum range for the targeting range.")]
         public Vector2 StartToTargetDist = new(28f, 35f);           // A minimum and maximum range for the targeting range.
