@@ -52,11 +52,12 @@ namespace CE6127.Tanks.AI
 
                 // Calculate launch force by launchforce = 1f * dist. 
                 // Restrict launch force to the range of 6.5f to 30f. 
-                m_LaunchForce = Mathf.Clamp(1f * dist, 6.5f, 30f);
+                m_LaunchForce = Mathf.Clamp(1f * dist, m_TankSM.LaunchForceMinMax.x, m_TankSM.LaunchForceMinMax.y);
 
+                // Make the tank to fire a projectile.
                 m_TankSM.LaunchProjectile(m_LaunchForce);
 
-                if (dist < m_TankSM.StopAtTargetDist.x)
+                if (dist > m_TankSM.StopAtTargetDist.x)
                 {
                     m_TankSM.ChangeState(m_TankSM.m_States.Idle);
                 }
