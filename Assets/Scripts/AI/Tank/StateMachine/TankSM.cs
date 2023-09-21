@@ -18,12 +18,14 @@ namespace CE6127.Tanks.AI
             public IdleState Idle;
             public PatrollingState Patrolling;
             public FireOnceState FireOnce;
+            public ChaseState ChaseState;
 
             internal States(TankSM sm)
             {
                 Idle = new IdleState(sm);
                 Patrolling = new PatrollingState(sm);
                 FireOnce = new FireOnceState(sm);
+                ChaseState = new ChaseState(sm);
             }
         }
 

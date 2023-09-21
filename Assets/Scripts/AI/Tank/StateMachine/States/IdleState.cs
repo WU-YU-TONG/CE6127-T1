@@ -32,7 +32,7 @@ namespace CE6127.Tanks.AI
             {
                 var dist = Vector3.Distance(m_TankSM.transform.position, m_TankSM.Target.position);
                 if (dist > m_TankSM.TargetDistance){
-                    m_StateMachine.ChangeState(m_TankSM.m_States.Patrolling);
+                    m_StateMachine.ChangeState(m_TankSM.m_States.ChaseState);
                 }
                 else if (dist <= m_TankSM.TargetDistance)
                 {

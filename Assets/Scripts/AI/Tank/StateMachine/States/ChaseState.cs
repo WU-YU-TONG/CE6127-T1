@@ -3,6 +3,8 @@ using UnityEngine;
 
 using Random = UnityEngine.Random;
 using Debug = UnityEngine.Debug;
+using DocumentFormat.OpenXml.Wordprocessing;
+using System;
 
 namespace CE6127.Tanks.AI
 {
@@ -39,16 +41,39 @@ namespace CE6127.Tanks.AI
             base.Update();
             if (m_TankSM.Target != null)
             {
+                // Chase the target.
                 var dist = Vector3.Distance(m_TankSM.transform.position, m_TankSM.Target.position);
-                if (dist <= m_TankSM.StopDistance) // ... Obviously this doesn't make much sense, but it's just for demonstration purposes.
-                    m_StateMachine.ChangeState(m_TankSM.m_States.Idle);
-            }
+                // Chase the target until the distance between the tank and the target is less than the stopping range.
+                if (dist > m_TankSM.TargetDistance || (Physics.Raycast(m_TankSM.transform.position, m_TankSM.transform.forward, out RaycastHit Hit, dist) && Hit.transform != m_TankSM.Target))
+                {
+                    // Calculate the distance between the tank and the target.
+                    var lookPos = m_TankSM.Target.position - m_TankSM.transform.position;
+                    lookPos.y = 0f;
+                    var rot = Quaternion.LookRotation(lookPos);
+                    m_TankSM.transform.rotation = Quaternion.Slerp(m_TankSM.transform.rotation, rot, m_TankSM.OrientSlerpScalar);
+                    m_TankSM.NavMeshAgent.SetDestination(m_TankSM.Target.position);
+                }
+                else if (Physics.Raycast(m_TankSM.transform.position, m_TankSM.transform.forward, out RaycastHit hit, dist))
+                {
+                    // If there is an obstacle, check if the obstacle is the target.
+                    if (hit.transform == m_TankSM.Target)
+                    {
+                        // Change to FireOnceState.
+                        m_TankSM.ChangeState(m_TankSM.m_States.FireOnce);
+                    }
+                }
+                else{
+                    m_TankSM.NavMeshAgent.SetDestination(m_TankSM.Target.position);
+                }
 
-            // If the tank is within the stopping distance of the destination...
-            if (Time.time >= m_TankSM.NavMeshUpdateDeadline)
-            {
-                m_TankSM.NavMeshUpdateDeadline = Time.time + m_TankSM.PatrolNavMeshUpdate;
-                m_TankSM.NavMeshAgent.SetDestination(m_Destination);
+                // Check the health of the tank.
+                // if (m_TankSM.Health <= 0)
+                // {
+                //     // Change to IdleState.
+                //     m_TankSM.ChangeState(m_TankSM.m_States.Idle);
+                // }
+                
+                
             }
         }
 

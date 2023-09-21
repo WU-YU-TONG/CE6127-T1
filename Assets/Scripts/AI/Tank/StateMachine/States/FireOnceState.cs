@@ -54,12 +54,30 @@ namespace CE6127.Tanks.AI
                 // Restrict launch force to the range of 6.5f to 30f. 
                 m_LaunchForce = Mathf.Clamp(1f * dist, m_TankSM.LaunchForceMinMax.x, m_TankSM.LaunchForceMinMax.y);
 
-                // Make the tank to fire a projectile.
-                m_TankSM.LaunchProjectile(m_LaunchForce);
+                // Detect if there is an obstacle between the tank and the target.
+                if (Physics.Raycast(m_TankSM.transform.position, m_TankSM.transform.forward, out RaycastHit hit, dist))
+                {
+                    // If there is an obstacle, check if the obstacle is the target.
+                    if (hit.transform == m_TankSM.Target)
+                    {
+                        // If the obstacle is the target, make the tank to fire a projectile.
+                        m_TankSM.LaunchProjectile(m_LaunchForce);
+                    }
+                    else
+                    {
+                        // If the obstacle is not the target, change the state to Patrolling.
+                        m_TankSM.ChangeState(m_TankSM.m_States.ChaseState);
+                    }
+                }
+                else
+                {
+                    // If there is no obstacle, make the tank to fire a projectile.
+                    m_TankSM.LaunchProjectile(m_LaunchForce);
+                }
 
                 if (dist > m_TankSM.StopAtTargetDist.x)
                 {
-                    m_TankSM.ChangeState(m_TankSM.m_States.Idle);
+                    m_TankSM.ChangeState(m_TankSM.m_States.ChaseState);
                 }
             }
         }
