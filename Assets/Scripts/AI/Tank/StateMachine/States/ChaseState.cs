@@ -47,10 +47,10 @@ namespace CE6127.Tanks.AI
                 if (dist > m_TankSM.TargetDistance || (Physics.Raycast(m_TankSM.transform.position, m_TankSM.transform.forward, out RaycastHit Hit, dist) && Hit.transform != m_TankSM.Target))
                 {
                     // Calculate the distance between the tank and the target.
-                    var lookPos = m_TankSM.Target.position - m_TankSM.transform.position;
-                    lookPos.y = 0f;
-                    var rot = Quaternion.LookRotation(lookPos);
-                    m_TankSM.transform.rotation = Quaternion.Slerp(m_TankSM.transform.rotation, rot, m_TankSM.OrientSlerpScalar);
+                    // var lookPos = m_TankSM.Target.position - m_TankSM.transform.position;
+                    // lookPos.y = 0f;
+                    // var rot = Quaternion.LookRotation(lookPos);
+                    // m_TankSM.transform.rotation = Quaternion.Slerp(m_TankSM.transform.rotation, rot, m_TankSM.OrientSlerpScalar);
                     m_TankSM.NavMeshAgent.SetDestination(m_TankSM.Target.position);
                 }
                 else if (Physics.Raycast(m_TankSM.transform.position, m_TankSM.transform.forward, out RaycastHit hit, dist))
@@ -58,20 +58,13 @@ namespace CE6127.Tanks.AI
                     // If there is an obstacle, check if the obstacle is the target.
                     if (hit.transform == m_TankSM.Target)
                     {
-                        // Change to FireOnceState.
+                        m_TankSM.NavMeshAgent.SetDestination(m_TankSM.transform.position);
                         m_TankSM.ChangeState(m_TankSM.m_States.FireOnce);
                     }
                 }
                 else{
                     m_TankSM.NavMeshAgent.SetDestination(m_TankSM.Target.position);
                 }
-
-                // Check the health of the tank.
-                // if (m_TankSM.Health <= 0)
-                // {
-                //     // Change to IdleState.
-                //     m_TankSM.ChangeState(m_TankSM.m_States.Idle);
-                // }
                 
                 
             }
